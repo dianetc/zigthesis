@@ -1,87 +1,34 @@
 const std = @import("std");
 
-fn GenerateImplReturn(comptime arg_types: []const type) type {
+pub fn Generator(comptime Predicate: type) type {
+    const Arg = @typeInfo(Predicate).Fn.params[0].type.?;
+
     return struct {
-        fn create() @This() {
-            const ArgTuple = std.meta.Tuple(arg_types);
-            var args: ArgTuple = undefined;
-            comptime var i = 0;
-            inline while (i < arg_types.len) : (i += 1) {
-                const field_type = arg_types[i];
-                @field(args, std.meta.fields(ArgTuple)[i].name) = generate(field_type);
+        pub fn generate() Arg {
+            var arg: Arg = undefined;
+            inline for (@typeInfo(Arg).Struct.fields) |field| {
+                @field(arg, field.name) = generateField(field.type);
             }
-            return @This(){ .tuple = args };
-        }
-
-        pub fn tuple(self: @This()) std.meta.Tuple(arg_types) {
-            return self.tuple;
-        }
-
-        tuple: std.meta.Tuple(arg_types),
-    };
-}
-
-fn generate_impl(arg_types: []const type) GenerateImplReturn(arg_types) {
-    return GenerateImplReturn(arg_types).create();
-}
-
-pub fn createGenerator(arg_types: []const type) type {
-    return struct {
-        pub fn generate() std.meta.Tuple(arg_types) {
-            const impl = generate_impl(arg_types);
-            return impl.tuple;
+            return arg;
         }
     };
 }
 
-fn generate(comptime T: type) T {
-    switch(@typeInfo(T)) {
+fn generateField(comptime T: type) T {
+    switch (@typeInfo(T)) {
         .Int => {
-            return IntGenerator(T).generate();
+            return std.crypto.random.intRangeAtMost(T, std.math.pow(i32, -10, 3), std.math.pow(i32, 10, 3));
         },
         .Float => {
-            return FloatGenerator(T).generate();
+            return std.crypto.random.float(T);
         },
         .Array => |array_info| {
-            return ArrayGenerator(array_info.child, array_info.len).generate();
-        },
-        else => @compileError("Type not supported") 
-    }
-}
-
-fn IntGenerator(comptime T: type) type {
-    return struct{
-        pub fn generate() T {
-            return std.crypto.random.intRangeAtMost(T,std.math.pow(i32,-10,3),std.math.pow(i32,10,3));
-        }
-    };
-        
-}
-
-fn FloatGenerator(comptime T: type) type {
-    return struct {
-        pub fn generate() T {
-            return std.crypto.random.float(T);
-        }
-    };
-}
-
-fn ArrayGenerator(comptime T: type, comptime n: usize) type {
-    return struct {
-        pub fn generate() [n]T {
-            var array: [n]T = undefined;
+            var array: T = undefined;
             for (&array) |*item| {
-                item.* = generateElement(T);
+                item.* = generateField(array_info.child);
             }
             return array;
-        }
-
-        fn generateElement(comptime ElementType: type) ElementType {
-            return switch (@typeInfo(ElementType)) {
-                .Int => IntGenerator(ElementType).generate(),
-                .Float => FloatGenerator(ElementType).generate(),
-                else => @compileError("Element type not supported"),
-            };
-        }
-    };
+        },
+        else => @compileError("Type '" ++ @typeName(T) ++ "' not supported "),
+    }
 }
