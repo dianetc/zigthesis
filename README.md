@@ -12,19 +12,16 @@ that predicate and it gives you a counterexample.
 Currently, tests can be added in ``src/main.zig". A current example 
 
 ```
-    zigthesis.falsify(
-        struct {
-            pub fn pred(args: std.meta.Tuple(&.{ i32, i32, i32 })) bool {
-                const x = args[0];
-                const y = args[1];
-		const z = args[2];
+    zigthesis.falsify(struct {
+        pub fn pred(args: struct { i32, i32, i32 }) bool {
+            const x = args[0];
+            const y = args[1];
+            const z = args[2];
 
-                return (x + y) * z == x * (y + z);
-            }
-        }.pred,
-        &[_]type{ i32, i32, i32 },
-        "Example 1"
-    );
+            return (x + y) * z == x * (y + z);
+        }
+    }.pred, "Example 1");
+
 ```
 Zigthesis, correctly, generates a counter example:
 ```
