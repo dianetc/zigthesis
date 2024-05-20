@@ -1,7 +1,8 @@
+# Zigthesis
 
-I wanted to learn a bit of Zig, so I created Zigthesis: a **small** library for falsifying a hypothesis.
+A  **small** library for falsifying a hypothesis.
 
-The primary entry point into the library is the zigthesis.falsify function.
+The primary entry point into the library is the `falsify` function.
 
 If this sounds eerily familiar to you, it should! Inspiration for this library was 
 taken directly from the initial commits of the very popular [Hypothesis library](https://github.com/HypothesisWorks/hypothesis) 
@@ -9,7 +10,7 @@ taken directly from the initial commits of the very popular [Hypothesis library]
 Similar to falsify in Hypothesis, you give it a predicate and a specification for how to generate arguments to
 that predicate and it gives you a counterexample.
 
-Currently, tests can be added in ``src/main.zig". A current example 
+Currently, tests can be added in `src/main.zig`. An example,
 
 ``` zig
     zigthesis.falsify(struct {
