@@ -17,20 +17,19 @@ pub fn Generator(comptime Predicate: type) type {
 fn generateField(comptime T: type) T {
     switch (@typeInfo(T)) {
         .Int => {
-            return std.crypto.random.intRangeAtMost(T, std.math.pow(i32, -10, 3), std.math.pow(i32, 10, 3));
+            if (T == u8){
+                return std.crypto.random.intRangeAtMost(T, 65, 122);
+            } else {
+                return std.crypto.random.intRangeAtMost(T, std.math.pow(i32, -10, 3), std.math.pow(i32, 10, 3));
+            }
         },
         .Float => {
             return std.crypto.random.float(T);
         },
         .Array => |array_info| {
-            const child = array_info.child;
             var array: T = undefined;
             for (&array) |*item| {
-                if (child == u8) {
-                     item.* = std.crypto.random.intRangeAtMost(u8, 65, 122);
-                }else {
                     item.* = generateField(array_info.child);
-                }
             }
             return array;
         },

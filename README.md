@@ -11,7 +11,7 @@ that predicate and it gives you a counterexample.
 
 Currently, tests can be added in ``src/main.zig". A current example 
 
-```
+``` zig
     zigthesis.falsify(struct {
         pub fn pred(args: struct { i32, i32, i32 }) bool {
             const x = args[0];
@@ -23,11 +23,13 @@ Currently, tests can be added in ``src/main.zig". A current example
     }.pred, "Example 1");
 
 ```
-Zigthesis, correctly, generates a counter example:
+
+Output:
 ```
-    > Falsifying case found for Example 1: { -574, 566, 837 }
+Falsifying case found for Example 1: { -574, 566, 837 }
 ```
-Zigthesis, will return that no falsifying case is found, if none was found within MAX_DURATION_MS (currently set at 15 seconds).
+
+Zigthesis will return that no falsifying case is found, if none was found within MAX_DURATION_MS (currently set at 15 seconds).
 
 
 REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
