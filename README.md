@@ -10,7 +10,7 @@ taken directly from the initial commits of the very popular [Hypothesis library]
 Similar to falsify in Hypothesis, you give it a predicate and a specification for how to generate arguments to
 that predicate and it gives you a counterexample.
 
-Currently, test cases can be added in `tests/test_falsify.zig`. To get started run `zig build test` in the root directory. 
+Currently, test cases can be added in `tests/test_falsify.zig`. To get started, run `zig build test` in the root directory. 
 
 An example test and output, 
 
@@ -41,7 +41,7 @@ REMARK: This is tiny and doesn't do much for now. Next steps would be to make a 
 3. ~~Strings~~
 4. Dictionaries 
 
-Along with a bit of code of clean up (i.e. making a testing directory etc.)
+~~Along with a bit of code of clean up (i.e. making a testing directory etc.).~~
 
 In Hypothesis, they had both generating and minimizing components [(detailed here)](https://github.com/HypothesisWorks/hypothesis/blob/94037edcf6f5256214a8b39e266cc9452e34704c/README.rest)
 that I do not implement. This will be required for richer test cases.
