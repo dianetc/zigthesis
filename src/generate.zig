@@ -1,5 +1,8 @@
 const std = @import("std");
 
+const A = 65;
+const z = 122;
+
 pub fn Generator(comptime Predicate: type) type {
     const Arg = @typeInfo(Predicate).Fn.params[0].type.?;
 
@@ -18,7 +21,7 @@ fn generateField(comptime T: type) T {
     switch (@typeInfo(T)) {
         .Int => {
             if (T == u8){
-                return std.crypto.random.intRangeAtMost(T, 65, 122);
+                return std.crypto.random.intRangeAtMost(T, A, z);
             } else {
                 return std.crypto.random.intRangeAtMost(T, std.math.pow(i32, -10, 3), std.math.pow(i32, 10, 3));
             }
