@@ -1,5 +1,6 @@
 const std = @import("std");
 
+// ascii mapping
 const A = 65;
 const z = 122;
 
