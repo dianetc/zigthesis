@@ -10,7 +10,9 @@ taken directly from the initial commits of the very popular [Hypothesis library]
 Similar to falsify in Hypothesis, you give it a predicate and a specification for how to generate arguments to
 that predicate and it gives you a counterexample.
 
-Currently, tests can be added in `src/main.zig`. An example,
+Currently, test cases can be added in `tests/test_falsify.zig`. To get started run `zig build test` in your terminal. 
+
+An example test and output, 
 
 ``` zig
     zigthesis.falsify(struct {
@@ -21,16 +23,16 @@ Currently, tests can be added in `src/main.zig`. An example,
 
             return (x + y) * z == x * (y + z);
         }
-    }.pred, "Example 1");
+    }.pred, "Weird Distributive");
 
 ```
 
 Output:
 ```
-Falsifying case found for Example 1: { -574, 566, 837 }
+Weird Distributive failed with case: { 480, -670, 646 }
 ```
 
-Zigthesis will return that no falsifying case is found, if none was found within MAX_DURATION_MS (currently set at 15 seconds).
+Zigthesis will return a success, if no falsifying test cade was found within MAX_DURATION_MS (currently set at 10 seconds).
 
 
 REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
