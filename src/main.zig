@@ -47,5 +47,15 @@ pub fn main() void {
 
             return utils.sum(x[0..]) < 100;
         }
-    }.pred, "Sum of Elements in List");
+    }.pred, "Sum of Elements Less than 100");
+
+    zigthesis.falsify(struct {
+        pub fn pred(args: struct { [6]u8 }) bool {
+            const x = args[0];
+
+            return std.mem.indexOf(u8, &x, "xyz") == null;
+        }
+    }.pred, "'xyz' not in string");
+    // to see the output in string format, print out the returned array
+    // with {s}
 }

@@ -30,10 +30,10 @@ Zigthesis, correctly, generates a counter example:
 Zigthesis, will return that no falsifying case is found, if none was found within MAX_DURATION_MS (currently set at 15 seconds).
 
 
-REMARK: This is tiny and doesn't do much for now. Next steps would be to generate and test various properties with:
+REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
 1. ~~Floats~~
 2. ~~Arrays (of floats/integers)~~
-3. Strings
+3. ~~Strings~~
 4. Dictionaries 
 
 Along with a bit of code of clean up (i.e. making a testing directory etc.)

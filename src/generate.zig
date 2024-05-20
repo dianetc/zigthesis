@@ -23,9 +23,14 @@ fn generateField(comptime T: type) T {
             return std.crypto.random.float(T);
         },
         .Array => |array_info| {
+            const child = array_info.child;
             var array: T = undefined;
             for (&array) |*item| {
-                item.* = generateField(array_info.child);
+                if (child == u8) {
+                     item.* = std.crypto.random.intRangeAtMost(u8, 65, 122);
+                }else {
+                    item.* = generateField(array_info.child);
+                }
             }
             return array;
         },
