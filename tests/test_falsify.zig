@@ -56,4 +56,12 @@ test "falsify" {
             return std.mem.indexOf(u8, &x, "xyz") == null;
         }
     }.pred, "'xyz' Not a Substring"); //can view the falsifying case in string format by printing out with {s}
+
+    zigthesis.falsify(struct {
+        pub fn pred(args: struct { i32, f32 }) bool {
+            const x = @intToFloat(f32, args[0]);
+            const y = args[1];
+            return x + y == y + x;
+        }
+    }.pred, "Int and Float Test");
 }
