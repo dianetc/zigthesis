@@ -10,11 +10,16 @@ taken directly from the initial commits of the very popular [Hypothesis library]
 Similar to falsify in Hypothesis, you give it a predicate and a specification for how to generate arguments to
 that predicate and it gives you a counterexample.
 
-Currently, test cases can be added in `tests/test_falsify.zig`. To get started, run `zig build test` in the root directory. 
+Currently, test cases can be added in `tests/test_falsify.zig`. To get started by building and running test examples:
+
+```bash
+zig build
+zig build test
+```
 
 An example test and output, 
 
-``` zig
+```zig
     zigthesis.falsify(struct {
         pub fn pred(args: struct { i32, i32, i32 }) bool {
             const x = args[0];

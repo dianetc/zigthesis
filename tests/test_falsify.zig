@@ -43,9 +43,9 @@ test "falsify" {
 
     zigthesis.falsify(struct {
         pub fn pred(args: struct { [3]i32 }) bool {
-            const x = args[0];
+            const l1 = args[0];
 
-            return utils.sum(x[0..]) < 100;
+            return utils.sum(l1[0..]) < 100;
         }
     }.pred, "Sum Less Than 100");
 
@@ -56,4 +56,16 @@ test "falsify" {
             return std.mem.indexOf(u8, &x, "xyz") == null;
         }
     }.pred, "'xyz' Not a Substring"); //can view the falsifying case in string format by printing out with {s}
+
+    zigthesis.falsify(struct {
+        pub fn pred(args: struct { [3]i32, [3]i32 }) bool {
+            const l1 = args[0];
+	    const l2 = args[1];
+
+	    const combined = utils.sumPairwise(l1[0..],l2[0..]);
+
+            return combined.len == l1.len;
+        }
+    }.pred, "Length of Pairwise List Sum");
+
 }
