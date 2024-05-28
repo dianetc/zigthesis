@@ -8,9 +8,9 @@ If this sounds eerily familiar to you, it should! Inspiration for this library w
 taken directly from the initial commits of the very popular [Hypothesis library](https://github.com/HypothesisWorks/hypothesis) 
 
 Similar to falsify in Hypothesis, you give it a predicate and a specification for how to generate arguments to
-that predicate and it gives you a counterexample.
+that predicate, and it gives you a counterexample.
 
-Currently, test cases can be added in `tests/test_falsify.zig`. To get started by building and running test examples:
+Currently, test cases can be added in `tests/test_falsify.zig`. Get started by building and running test examples via:
 
 ```bash
 zig build
