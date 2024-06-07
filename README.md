@@ -21,11 +21,7 @@ An example test and output,
 
 ```zig
     zigthesis.falsify(struct {
-        pub fn pred(args: struct { i32, i32, i32 }) bool {
-            const x = args[0];
-            const y = args[1];
-            const z = args[2];
-
+        pub fn pred(x: i32, y: i32, z: i32) bool {
             return (x + y) * z == x * (y + z);
         }
     }.pred, "Weird Distributive");

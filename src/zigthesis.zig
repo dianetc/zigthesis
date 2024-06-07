@@ -1,9 +1,9 @@
 const std = @import("std");
 const generate = @import("generate.zig");
-const MAX_DURATION_MS: u64 = 10 * 1000;
+const MAX_DURATION_MS: u64 = 5 * 1000;
 
 pub fn falsify(predicate: anytype, test_name: []const u8) !void {
-    const gen = generate.Generator(@TypeOf(predicate));
+    const predTypeInfo = @typeInfo(@TypeOf(predicate)).Fn;
     const start_time = std.time.milliTimestamp();
     var prng = blk: {
         var seed: u64 = undefined;
@@ -18,8 +18,13 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
             std.debug.print("{s} succeeded.\n", .{test_name});
             return;
         }
-        const args = gen.generate(random);
-        const result = predicate(args);
+
+        var args: std.meta.ArgsTuple(@TypeOf(predicate)) = undefined;
+        inline for (&args, predTypeInfo.params) |*arg, param| {
+            arg.* = generate.generateField(random, param.type.?);
+        }
+
+        const result = @call(.auto, predicate, args);
         if (!result) {
             std.debug.print("{s} failed with case: {any}\n", .{ test_name, args });
             return;
