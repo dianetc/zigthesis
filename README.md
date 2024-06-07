@@ -31,7 +31,7 @@ Output:
 Weird Distributive failed with case: { 480, -670, 646 }
 ```
 
-Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 10 seconds).
+Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 5 seconds).
 
 
 REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
