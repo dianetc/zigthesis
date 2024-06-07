@@ -20,16 +20,10 @@ zig build test
 An example test and output, 
 
 ```zig
-    zigthesis.falsify(struct {
-        pub fn pred(args: struct { i32, i32, i32 }) bool {
-            const x = args[0];
-            const y = args[1];
-            const z = args[2];
-
-            return (x + y) * z == x * (y + z);
-        }
-    }.pred, "Weird Distributive");
-
+fn weirdDistributive(x: i32, y: i32, z: i32) bool {
+    return (x + y) * z == x * (y + z);
+}
+try zigthesis.falsify( weirdDistributive, "Weird Distributive");
 ```
 
 Output:
@@ -37,7 +31,7 @@ Output:
 Weird Distributive failed with case: { 480, -670, 646 }
 ```
 
-Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 10 seconds).
+Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 5 seconds).
 
 
 REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:

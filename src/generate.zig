@@ -5,21 +5,7 @@ const A = 65;
 const z = 122;
 
 
-pub fn Generator(comptime Predicate: type) type {
-    const Arg = @typeInfo(Predicate).Fn.params[0].type.?;
-
-    return struct {
-        pub fn generate(random: std.rand.Random) Arg {
-            var arg: Arg = undefined;
-            inline for (@typeInfo(Arg).Struct.fields) |field| {
-                @field(arg, field.name) = generateField(random, field.type);
-            }
-            return arg;
-        }
-    };
-}
-
-fn generateField(random: std.rand.Random, comptime T: type) T {  
+pub fn generateField(random: std.rand.Random, comptime T: type) T {  
     switch (@typeInfo(T)) {
         .Int => {
             if (T == u8){
