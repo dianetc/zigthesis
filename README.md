@@ -20,12 +20,10 @@ zig build test
 An example test and output, 
 
 ```zig
-    zigthesis.falsify(struct {
-        pub fn pred(x: i32, y: i32, z: i32) bool {
-            return (x + y) * z == x * (y + z);
-        }
-    }.pred, "Weird Distributive");
-
+fn weirdDistributive(x: i32, y: i32, z: i32) bool {
+    return (x + y) * z == x * (y + z);
+}
+try zigthesis.falsify( weirdDistributive, "Weird Distributive");
 ```
 
 Output:
