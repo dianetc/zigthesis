@@ -33,8 +33,8 @@ fn lengthOfPairwiseListSum(l1: [3]i32, l2: [3]i32) bool {
 
 test "falsify" {
     try zigthesis.falsify(weirdDistributive, "Weird Distributive");
-    try zigthesis.falsify(commutativeMultiplication, "Commutative Property of Multiplication (Integers)");
-    try zigthesis.falsify(commutativeSubtraction, "Commutative Property of Subtraction (Integers)");
+    try zigthesis.falsify(commutativeMultiplication, "Multiplicative Commutativity ");
+    try zigthesis.falsify(commutativeSubtraction, "Subtractive Commutativity");
     try zigthesis.falsify(associativityFloats, "Associativity of Floats");
     try zigthesis.falsify(sumLessThan100, "Sum Less Than 100");
     try zigthesis.falsify(xyzNotSubstring, "'xyz' Not a Substring");

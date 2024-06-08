@@ -28,7 +28,7 @@ try zigthesis.falsify( weirdDistributive, "Weird Distributive");
 
 Output:
 ```
-Weird Distributive failed with case: { 480, -670, 646 }
+Weird Distributive                  ✗ at: { -178, -361, 514 }
 ```
 
 Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 5 seconds).
