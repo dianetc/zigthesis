@@ -11,8 +11,8 @@ fn commutativeAddition(x: i32, y: i32) bool {
     return x + y == y + x;
 }
 test "Commutativity" {
-    try std.testing.expect(!try zigthesis.falsify(commutativeMultiplication));
-    try std.testing.expect(!try zigthesis.falsify(commutativeAddition));
+    try zigthesis.falsify(commutativeMultiplication, "multplicaitve commutativity");
+    try zigthesis.falsify(commutativeAddition, "additive commutativity");
 }
 
 fn associativityMultiplication(x: i32, y: i32, z: i32) bool {
@@ -24,8 +24,8 @@ fn associativityAddition(x: i32, y: i32, z: i32) bool {
 }
 
 test "Associativity" {
-    try std.testing.expect(!try zigthesis.falsify(associativityMultiplication));
-    try std.testing.expect(!try zigthesis.falsify(associativityAddition));
+    try zigthesis.falsify(associativityMultiplication, "multiplicative associativity");
+    try zigthesis.falsify(associativityAddition, "additive associativity");
 }
 
 //The following tests should all fail
@@ -43,9 +43,9 @@ fn lengthOfPairwiseListSum(l1: [3]i32, l2: [3]i32) bool {
 }
 
 test "Strings and Lists" {
-    try std.testing.expect(!try zigthesis.falsify(sumLessThan100));
-    try std.testing.expect(!try zigthesis.falsify(xyzNotSubstring));
-    try std.testing.expect(!try zigthesis.falsify(lengthOfPairwiseListSum));
+    try zigthesis.falsify(sumLessThan100, "List sum < 100");
+    try zigthesis.falsify(xyzNotSubstring, "xyz not a substring");
+    try zigthesis.falsify(lengthOfPairwiseListSum, "pairwise list sum length");
 }
 
 fn weirdDistributive(x: i32, y: i32, z: i32) bool {
@@ -53,5 +53,5 @@ fn weirdDistributive(x: i32, y: i32, z: i32) bool {
 }
 
 test "Weird Distributive" {
-    try std.testing.expect(!try zigthesis.falsify(weirdDistributive));
+    try zigthesis.falsify(weirdDistributive, "weird distributive");
 }
