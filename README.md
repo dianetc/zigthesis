@@ -23,7 +23,7 @@ An example test and output,
 fn weirdDistributive(x: i32, y: i32, z: i32) bool {
     return (x + y) * z == x * (y + z);
 }
-try zigthesis.falsify(weirdDistributive);
+try zigthesis.falsify(weirdDistributive, "weird distributive");
 ```
 
 Output:
