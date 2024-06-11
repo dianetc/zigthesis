@@ -23,12 +23,14 @@ An example test and output,
 fn weirdDistributive(x: i32, y: i32, z: i32) bool {
     return (x + y) * z == x * (y + z);
 }
-try zigthesis.falsify( weirdDistributive, "Weird Distributive");
+test "Weird Distributive" {
+    try std.testing.expect(!try zigthesis.falsify(weirdDistributive));
+}
 ```
 
 Output:
 ```
-Weird Distributive             ✗ at: { 277, 357, -523 }
+error: 'test_falsify.test.Weird Distributive' failed: { -915, 650, -700 }
 ```
 
 Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 5 seconds).
