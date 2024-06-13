@@ -23,7 +23,7 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
         }
         const result = @call(.auto, predicate, args);
         if (!result) {
-            std.debug.print("{s:<30} \x1b[31m✗\x1b[0m at: {any}\n", .{ test_name, args });
+            std.debug.print("{s:<30} failed for {any}\n", .{ test_name, args });
             return;
         }
     }

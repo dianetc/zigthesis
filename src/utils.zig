@@ -24,8 +24,11 @@ pub fn sumPairwise(list1: []const i32, list2: []const i32) []i32 {
     return result;
 }
 
-// scales random.float to return within the range (min, max)
-pub fn randomFloat(comptime T: type, min: T, max: T) T {
-    return min + (max - min) * std.crypto.random.float(T);
+pub fn manhattanDistance(a: @Vector(2,i32), b: @Vector(2,i32)) u32 {
+    return @abs(a[0] - b[0]) + @abs(a[1] - b[1]);
 }
 
+pub const structTest = struct {
+    a: [3]u8,
+    b: [3]u8,
+};

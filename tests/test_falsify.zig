@@ -3,6 +3,7 @@ const zigthesis = @import("zigthesis");
 const utils = @import("utils");
 
 // The following tests should all pass
+
 fn commutativeMultiplication(x: i32, y: i32) bool {
     return x * y == y * x;
 }
@@ -28,7 +29,18 @@ test "Associativity" {
     try zigthesis.falsify(associativityAddition, "additive associativity");
 }
 
+pub fn symmetry(a: @Vector(2,i32), b: @Vector(2, i32)) bool {
+    const ab = utils.manhattanDistance(a, b);
+    const ba = utils.manhattanDistance(b, a);
+
+    return ab == ba;
+}
+test "Distance Symmetry"{
+    try zigthesis.falsify(symmetry, "symmetry");
+}
+
 //The following tests should all fail
+
 fn sumLessThan100(l1: [3]i32) bool {
     return utils.sum(l1[0..]) < 100;
 }
@@ -54,4 +66,12 @@ fn weirdDistributive(x: i32, y: i32, z: i32) bool {
 
 test "Weird Distributive" {
     try zigthesis.falsify(weirdDistributive, "weird distributive");
+}
+
+fn simpleStruct(instance: utils.structTest) bool {
+    // this checks that fields can in fact be different
+    return std.mem.eql(u8, &instance.a, &instance.b);
+}
+test "Struct Test"{
+    try zigthesis.falsify(simpleStruct, "field entries in struct");
 }
