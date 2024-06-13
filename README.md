@@ -46,14 +46,3 @@ REMARK: This is tiny and doesn't do much for now. Next steps would be to make a 
 In Hypothesis, they had both generating and minimizing components [(detailed here)](https://github.com/HypothesisWorks/hypothesis/blob/94037edcf6f5256214a8b39e266cc9452e34704c/README.rest)
 that I do not implement. This will be required for richer test cases.
 
-## Concessions Made
-In order to use `src/utils.zig` in `tests/test_falsify.zig` we needed to make it a module. Unfortunately, this caused an issue when trying to import `src/utils.zig` in another file within `src`. The current workaround is to have a "copy' of `src/utils.zig` in `src/decl/` that includes all the struct declaration that are of interest for testing. That is, to test properties using, say,
-
-```zig
-pub const structTest = struct {
-    a: [3]u8,
-    b: [3]u8,
-};
-```
-One needs a copy of this function in both `src/utils.zig` and `src/decl/utils.zig`!
-
