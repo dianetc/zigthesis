@@ -12,7 +12,7 @@ fn commutativeAddition(x: i32, y: i32) bool {
     return x + y == y + x;
 }
 test "Commutativity" {
-    try zigthesis.falsify(commutativeMultiplication, "multplicaitve commutativity");
+    try zigthesis.falsify(commutativeMultiplication, "multiplicative commutativity");
     try zigthesis.falsify(commutativeAddition, "additive commutativity");
 }
 
