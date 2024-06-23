@@ -4,7 +4,7 @@ pub fn shrink(comptime T: type, value: T, predicate: anytype, args: anytype) T {
     return switch (@typeInfo(T)) {
         .Int => shrinkInt(T, value, predicate, args),
         .Float => shrinkFloat(T, value, predicate, args),
-        .Array => value, //shrinkArray(T, value, predicate, args),
+        .Array => shrinkArray(T, value, predicate, args),
         .Struct => value, //shrinkStruct(T, value, predicate, args),
         else => value,
     };
@@ -62,12 +62,12 @@ fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T 
         const curr = i;
         shrunk[i] = shrink(info.child, value[i], struct {
             fn inner(v: info.child, a: @TypeOf(args)) bool {
-                var temp = value;
+                var temp = a[a.len-1];
                 temp[curr] = v;
-                return predicate(temp, a);
+                return predicate(temp, a[0..a.len-1] ++ .{temp});
             }
-        }.inner, args);
-        if (!predicate(shrunk, args)) {
+        }.inner, args ++ .{value});
+        if (!predicate(shrunk, args ++ .{value})) {
             return shrunk;
         }
     }
