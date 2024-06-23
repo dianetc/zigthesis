@@ -32,7 +32,6 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
 }
 
 fn shrinkArgs(predicate: anytype, args: std.meta.ArgsTuple(@TypeOf(predicate))) std.meta.ArgsTuple(@TypeOf(predicate)) {
-    //const predTypeInfo = @typeInfo(@TypeOf(predicate)).Fn;
     var shrunk_args = args; 
     inline for (&shrunk_args, 0..) |*arg, i| {
         arg.* = shrink.shrink(@TypeOf(arg.*), arg.*, struct {
