@@ -5,7 +5,7 @@ pub fn shrink(comptime T: type, value: T, predicate: anytype, args: anytype) T {
         .Int => shrinkInt(T, value, predicate, args),
         .Float => shrinkFloat(T, value, predicate, args),
         .Array => shrinkArray(T, value, predicate, args),
-        .Struct => value, //shrinkStruct(T, value, predicate, args),
+        .Struct => shrinkStruct(T, value, predicate, args),
         else => value,
     };
 }
@@ -74,20 +74,20 @@ fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T 
     return value;
 }
 
-//fn shrinkStruct(comptime T: type, value: T, predicate: anytype, args: anytype) T {
-//    const info = @typeInfo(T).Struct;
-//    inline for (info.fields) |field| {
-//        var shrunk = value;
-//        @field(shrunk, field.name) = shrink(field.type, @field(value, field.name), struct {
-//            fn inner(v: field.type, a: @TypeOf(.{args} ++ .{value})) bool {
-//                var temp = a[a.len-1];
-//                @field(temp, field.name) = v;
-//                return predicate(temp, a);
-//            }
-//        }.inner, .{args} ++ .{value});
-//       if (!predicate(shrunk, args)) {
-//            return shrunk;
-//        }
-//    }
-//    return value;
-//}
+fn shrinkStruct(comptime T: type, value: T, predicate: anytype, args: anytype) T {
+    const info = @typeInfo(T).Struct;
+    inline for (info.fields) |field| {
+        var shrunk = value;
+        @field(shrunk, field.name) = shrink(field.type, @field(value, field.name), struct {
+            fn inner(v: field.type, a: @TypeOf(.{args} ++ .{value})) bool {
+                var temp = a[a.len-1];
+                @field(temp, field.name) = v;
+                return predicate(temp, a[0]);
+            }
+        }.inner, .{args} ++ .{value});
+       if (!predicate(shrunk, args)) {
+            return shrunk;
+        }
+    }
+    return value;
+}
