@@ -74,20 +74,20 @@ fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T 
     return value;
 }
 
-fn shrinkStruct(comptime T: type, value: T, predicate: anytype, args: anytype) T {
-    const info = @typeInfo(T).Struct;
-    inline for (info.fields) |field| {
-        var shrunk = value;
-        @field(shrunk, field.name) = shrink(field.type, @field(value, field.name), struct {
-            fn inner(v: field.type, a: @TypeOf(.{args} ++ .{value})) bool {
-                var temp = a[a.len-1];
-                @field(temp, field.name) = v;
-                return predicate(temp, a);
-            }
-        }.inner, .{args} ++ .{value});
-       if (!predicate(shrunk, args)) {
-            return shrunk;
-        }
-    }
-    return value;
-}
+//fn shrinkStruct(comptime T: type, value: T, predicate: anytype, args: anytype) T {
+//    const info = @typeInfo(T).Struct;
+//    inline for (info.fields) |field| {
+//        var shrunk = value;
+//        @field(shrunk, field.name) = shrink(field.type, @field(value, field.name), struct {
+//            fn inner(v: field.type, a: @TypeOf(.{args} ++ .{value})) bool {
+//                var temp = a[a.len-1];
+//                @field(temp, field.name) = v;
+//                return predicate(temp, a);
+//            }
+//        }.inner, .{args} ++ .{value});
+//       if (!predicate(shrunk, args)) {
+//            return shrunk;
+//        }
+//    }
+//    return value;
+//}
