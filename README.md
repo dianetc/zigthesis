@@ -28,21 +28,21 @@ try zigthesis.falsify(weirdDistributive, "weird distributive");
 
 Output:
 ```
-weird distributive             failed for { -287, 121, -670 }
+weird distributive             failed for { 1, 1, 0 }
 ```
 
 Zigthesis will return a success, if no falsifying test case was found within MAX_DURATION_MS (currently set at 5 seconds).
 
 
-REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
+INITIAL REMARK: This is tiny and doesn't do much for now. Next steps would be to make a simple foundation for generating and testing properties with:
 1. ~~Floats~~
 2. ~~Arrays (of floats/integers)~~
 3. ~~Vectors~~
 4. ~~Strings~~
 5. ~~User Defined Struct~~
 
-~~Along with a bit of code of clean up (i.e. making a testing directory etc.).~~
+## STATUS:
 
-In Hypothesis, they had both generating and minimizing components [(detailed here)](https://github.com/HypothesisWorks/hypothesis/blob/94037edcf6f5256214a8b39e266cc9452e34704c/README.rest)
-that I do not implement. This will be required for richer test cases.
+- Currently `main.zig` only has an empty main function. This is confusing. Is there a way refactor to make this more intuitive?
+- Implemented a [bad shrinking](https://propertesting.com/book_shrinking.html) mechanism. More thought needs to be put into this.
 

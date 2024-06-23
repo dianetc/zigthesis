@@ -63,9 +63,14 @@ test "Strings and Lists" {
 fn weirdDistributive(x: i32, y: i32, z: i32) bool {
     return (x + y) * z == x * (y + z);
 }
+fn weirdAbsolute(x: i32, y: i32) bool {
+    return @abs(x + y) == @abs(x) + @abs(y);
+}
 
-test "Weird Distributive" {
+test "Distributive" {
     try zigthesis.falsify(weirdDistributive, "weird distributive");
+    try zigthesis.falsify(weirdAbsolute, "weird absolute");
+    try
 }
 
 fn simpleStruct(instance: utils.structTest) bool {
