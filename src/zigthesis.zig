@@ -1,5 +1,6 @@
 const std = @import("std");
 const generate = @import("generate.zig");
+const shrink = @import("shrink.zig");
 const MAX_DURATION_MS: u64 = 5 * 1000;
 
 pub fn falsify(predicate: anytype, test_name: []const u8) !void {
@@ -23,8 +24,23 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
         }
         const result = @call(.auto, predicate, args);
         if (!result) {
+            args = shrinkArgs(predicate, args);
             std.debug.print("{s:<30} failed for {any}\n", .{ test_name, args });
             return;
         }
     }
+}
+
+fn shrinkArgs(predicate: anytype, args: std.meta.ArgsTuple(@TypeOf(predicate))) std.meta.ArgsTuple(@TypeOf(predicate)) {
+    var shrunk_args = args; 
+    inline for (&shrunk_args, 0..) |*arg, i| {
+        arg.* = shrink.shrink(@TypeOf(arg.*), arg.*, struct {
+            fn inner(new_value: @TypeOf(arg.*), current_args: std.meta.ArgsTuple(@TypeOf(predicate))) bool {
+                var test_args = current_args;
+                @field(test_args, std.meta.fieldNames(std.meta.ArgsTuple(@TypeOf(predicate)))[i]) = new_value;
+                return @call(.auto, predicate, test_args);
+            }
+        }.inner, shrunk_args);
+    } 
+    return shrunk_args;
 }

@@ -12,7 +12,7 @@ fn commutativeAddition(x: i32, y: i32) bool {
     return x + y == y + x;
 }
 test "Commutativity" {
-    try zigthesis.falsify(commutativeMultiplication, "multplicaitve commutativity");
+    try zigthesis.falsify(commutativeMultiplication, "multiplicative commutativity");
     try zigthesis.falsify(commutativeAddition, "additive commutativity");
 }
 
@@ -64,8 +64,13 @@ fn weirdDistributive(x: i32, y: i32, z: i32) bool {
     return (x + y) * z == x * (y + z);
 }
 
-test "Weird Distributive" {
+fn weirdAbsolute(x: i32, y: i32) bool {
+    return @abs(x + y) == @abs(x) + @abs(y);
+}
+
+test "Distributive" {
     try zigthesis.falsify(weirdDistributive, "weird distributive");
+    try zigthesis.falsify(weirdAbsolute, "weird absolute");
 }
 
 fn simpleStruct(instance: utils.structTest) bool {
