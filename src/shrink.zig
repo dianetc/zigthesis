@@ -59,15 +59,15 @@ fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T 
     var i: usize = 0;
     while (i < info.len) : (i += 1) {
         var shrunk = value;
-        const curr = i;
         shrunk[i] = shrink(info.child, value[i], struct {
-            fn inner(v: info.child, a: @TypeOf(args)) bool {
+            fn inner(v: info.child, a: @TypeOf(.{args} ++ .{i, value})) bool {
                 var temp = a[a.len-1];
+                const curr = a[a.len-2];
                 temp[curr] = v;
-                return predicate(temp, a[0..a.len-1] ++ .{temp});
+                return predicate(temp, a[0]);
             }
-        }.inner, args ++ .{value});
-        if (!predicate(shrunk, args ++ .{value})) {
+        }.inner, .{args} ++ .{i, value});
+        if (!predicate(shrunk, args)) {
             return shrunk;
         }
     }
