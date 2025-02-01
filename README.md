@@ -44,5 +44,6 @@ INITIAL REMARK: This is tiny and doesn't do much for now. Next steps would be to
 ## STATUS:
 
 - Currently `main.zig` only has an empty main function. This is confusing. Is there a way refactor to make this more intuitive?
-- Implemented a [bad shrinking](https://propertesting.com/book_shrinking.html) mechanism. More thought needs to be put into this.
+
+- Implemented a [bad shrinking](https://propertesting.com/book_shrinking.html) mechanism. More thought needs to be put into this. Currently shrinking in zigthesis is treated as a [post-facto process](https://dianetc.github.io/musings/initial_shrinking/). We must "integrate" shrinking into the generation process instead of afterwards in order to get minimizing falsifying cases. My next obvious step was to have the generator produce not just a plain value, but a structure (call it a sample) that contains both the generated value and a (possibly lazy) tree of shrink candidates. That way, if a property fails, we can traverse the tree to quickly locate a minimalfailing case. This is easier said than done though. 
 
