@@ -1,23 +1,52 @@
 const std = @import("std");
 const generate = @import("generate.zig");
 const shrink = @import("shrink.zig");
-const MAX_DURATION_MS: u64 = 5 * 1000;
+ 
+pub const Error = error{
+    Failed,
+};
 
-pub fn falsify(predicate: anytype, test_name: []const u8) !void {
+fn defaultOnError(seed: u64, test_name: []const u8, args : anytype) Error!void {
+    std.debug.print("{s:<30} failed for {any} with seed {d}\n", .{ test_name, args, seed});
+}
+
+/// A function for onError that will fail the test.
+pub fn failOnError(seed: u64, test_name: []const u8, args : anytype) Error!void {
+    try defaultOnError(seed, test_name, args);
+    return error.Failed;
+}
+
+/// Config for falsification.
+/// max_duration_ms: The maximum duration of the test in milliseconds.
+/// max_iterations: The maximum number of iterations to run.
+/// The test will complete when it's performed max_iterations or max_duration_ms has passed.
+pub const Config = struct {
+    max_duration_ms: u64 = 5 * 1000,
+    max_iterations: u64 = std.math.maxInt(u64),
+    seed: ?u64 = null,
+    /// The function to call if the test fails.  It should return an error if the test is considered failed.
+    onError: fn (seed: u64, test_name: []const u8, args : anytype) Error!void = defaultOnError,
+};
+
+pub fn falsifyWith(predicate: anytype, test_name: []const u8, config: Config) !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const predTypeInfo = @typeInfo(@TypeOf(predicate)).Fn;
     const start_time = std.time.milliTimestamp();
+    var seed: u64 = undefined;
     var prng = blk: {
-        var seed: u64 = undefined;
-        try std.posix.getrandom(std.mem.asBytes(&seed));
+        if (config.seed) |s| {
+            seed = s;
+        } else {
+            try std.posix.getrandom(std.mem.asBytes(&seed));
+        }
         break :blk std.rand.DefaultPrng.init(seed);
     };
     const random = prng.random();
 
-    while (true) {
+    for (0..config.max_iterations) |_| {
         const current_time = std.time.milliTimestamp();
-        if (current_time - start_time >= MAX_DURATION_MS) {
+        if (current_time - start_time >= config.max_duration_ms) {
             return;
         }
         var args: std.meta.ArgsTuple(@TypeOf(predicate)) = undefined;
@@ -27,10 +56,13 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
         const result = @call(.auto, predicate, args);
         if (!result) {
             args = shrinkArgs(predicate, args);
-            std.debug.print("{s:<30} failed for {any}\n", .{ test_name, args });
-            return;
+            return config.onError(seed,test_name, args);
         }
     }
+}
+
+pub fn falsify(predicate: anytype, test_name: []const u8) !void {
+    return falsifyWith(predicate, test_name, .{});
 }
 
 fn shrinkArgs(predicate: anytype, args: std.meta.ArgsTuple(@TypeOf(predicate))) std.meta.ArgsTuple(@TypeOf(predicate)) {
