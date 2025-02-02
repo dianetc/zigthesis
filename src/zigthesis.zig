@@ -4,6 +4,8 @@ const shrink = @import("shrink.zig");
 const MAX_DURATION_MS: u64 = 5 * 1000;
 
 pub fn falsify(predicate: anytype, test_name: []const u8) !void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
     const predTypeInfo = @typeInfo(@TypeOf(predicate)).Fn;
     const start_time = std.time.milliTimestamp();
     var prng = blk: {
@@ -20,7 +22,7 @@ pub fn falsify(predicate: anytype, test_name: []const u8) !void {
         }
         var args: std.meta.ArgsTuple(@TypeOf(predicate)) = undefined;
         inline for (&args, predTypeInfo.params) |*arg, param| {
-            arg.* = generate.generateField(random, param.type.?);
+            arg.* = try generate.generateField(arena.allocator(), random, param.type.?);
         }
         const result = @call(.auto, predicate, args);
         if (!result) {
