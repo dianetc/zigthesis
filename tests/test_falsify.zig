@@ -80,3 +80,38 @@ fn simpleStruct(instance: utils.structTest) bool {
 test "Struct Test"{
     try zigthesis.falsify(simpleStruct, "field entries in struct");
 }
+
+const AnEnum = union(enum) {
+    a : u8,
+    b : u16,
+    c : u32,
+    d : u64,
+    e : i8,
+    f : i16,
+    g : i32,
+    h : i64,
+    i : f32,
+    j : f64,
+    k : bool,
+    l : void,
+    m : [3]u8,
+    n : [3]u16,
+    o : [3]u32,
+    p : [3]u64,
+    q : [3]i8,
+    r : []const u8,
+    s : usize,
+    t : *u8,
+    u : ?u8,
+    v : u9,
+    w : []u64,
+    x : []usize,
+};
+
+fn enumTest(instance: AnEnum) bool {
+    return instance == .a;
+}
+
+test "Enum Test" {
+    try zigthesis.falsify(enumTest, "enum test");
+}
