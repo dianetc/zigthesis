@@ -32,3 +32,20 @@ pub const structTest = struct {
     a: [3]u8,
     b: [3]u8,
 };
+
+pub fn castUnion(comptime T: type, from: anytype) T {
+    if (@typeInfo(T) != .Union) {
+        @compileError("Destination type must be a union for castUnion");
+    }
+    const FromType = @TypeOf(from);
+    if (@typeInfo(FromType) != .Union) {
+        @compileError("Source type must be a union for castUnion");
+    }
+    const from_info = @typeInfo(FromType).Union;
+    inline for (from_info.fields) |field| {
+        if (std.meta.activeTag(from) == @field(std.meta.Tag(FromType), field.name)) {
+            return @unionInit(T, field.name, @field(from, field.name));
+        }
+    }
+    unreachable;
+}
