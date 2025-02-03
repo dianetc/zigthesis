@@ -40,6 +40,7 @@ INITIAL REMARK: This is tiny and doesn't do much for now. Next steps would be to
 3. ~~Vectors~~
 4. ~~Strings~~
 5. ~~User Defined Struct~~
+6. enums, slices, pointers etc.
 
 ## STATUS:
 
