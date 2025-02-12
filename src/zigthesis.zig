@@ -31,7 +31,7 @@ pub const Config = struct {
 pub fn falsifyWith(predicate: anytype, test_name: []const u8, config: Config) !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
-    const predTypeInfo = @typeInfo(@TypeOf(predicate)).Fn;
+    const predTypeInfo = @typeInfo(@TypeOf(predicate)).@"fn";
     const start_time = std.time.milliTimestamp();
     var seed: u64 = undefined;
     var prng = blk: {
@@ -40,7 +40,7 @@ pub fn falsifyWith(predicate: anytype, test_name: []const u8, config: Config) !v
         } else {
             try std.posix.getrandom(std.mem.asBytes(&seed));
         }
-        break :blk std.rand.DefaultPrng.init(seed);
+        break :blk std.Random.DefaultPrng.init(seed);
     };
     const random = prng.random();
 

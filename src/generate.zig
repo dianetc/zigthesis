@@ -4,14 +4,14 @@ const std = @import("std");
 const A = 65;
 const z = 122;
 
-pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime T: type) std.mem.Allocator.Error!T {
+pub fn generateField(alloc: std.mem.Allocator, random: std.Random, comptime T: type) std.mem.Allocator.Error!T {
     const typeInfo = @typeInfo(T);
     switch (typeInfo) {
-        .Bool => {
+        .bool => {
             return random.boolean();
         },
-        .Int => {
-            const len: comptime_int = if (typeInfo.Int.signedness == .signed) 7 else 4;
+        .int => {
+            const len: comptime_int = if (typeInfo.int.signedness == .signed) 7 else 4;
             var boundaries: [len]T = undefined;
             getBoundaries(T, &boundaries);
             if (random.float(f32) < 0.2) {
@@ -24,7 +24,7 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime
                 } else if (T == u32) {
                     const max = comptime std.math.pow(T, 10, 3);
                     return random.intRangeAtMost(T, 0, max);
-                } else if (typeInfo.Int.signedness == .unsigned) {
+                } else if (typeInfo.int.signedness == .unsigned) {
                     const max = comptime std.math.maxInt(T);
                     return random.intRangeAtMost(T, 0, max);
                 } else {
@@ -34,7 +34,7 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime
                 }
             }
         },
-        .Float => {
+        .float => {
             const special_values = [_]T{ -std.math.inf(T), -1, -std.math.floatMin(T), 0, std.math.floatMin(T), 1, std.math.inf(T), std.math.nan(T) };
             if (random.float(f32) < 0.2) {
                 return special_values[random.intRangeAtMost(usize, 0, special_values.len - 1)];
@@ -42,14 +42,14 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime
                 return random.float(T);
             }
         },
-        .Array => |array_info| {
+        .array => |array_info| {
             var array: T = undefined;
             for (&array) |*item| {
                 item.* = try generateField(alloc, random, array_info.child);
             }
             return array;
         },
-        .Vector => |vector_info| {
+        .vector => |vector_info| {
             const elementType = vector_info.child;
             const elementCount = vector_info.len;
             var vector: T = undefined;
@@ -60,17 +60,17 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime
             const vec: @Vector(elementCount, elementType) = vector;
             return vec;
         },
-        .Struct => {
+        .@"struct" => {
             var instance: T = undefined;
-            const structInfo = typeInfo.Struct;
+            const structInfo = typeInfo.@"struct";
             inline for (structInfo.fields) |field| {
                 @field(instance, field.name) = try generateField(alloc, random, field.type);
             }
             return instance;
         },
-        .Union => {
+        .@"union" => {
             var instance: T = undefined;
-            const unionInfo = typeInfo.Union;
+            const unionInfo = typeInfo.@"union";
             const field_index = random.intRangeAtMost(usize, 0, unionInfo.fields.len - 1);
             switch (field_index) {
                 inline 0...unionInfo.fields.len - 1 => |i| {
@@ -80,35 +80,35 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.rand.Random, comptime
             }
             return instance;
         },
-        .Void => {
+        .void => {
             return {};
         },
-        .Optional => {
+        .optional => {
             if (random.float(f32) < 0.5) {
                 return null;
             } else {
-                return try generateField(alloc, random, typeInfo.Optional.child);
+                return try generateField(alloc, random, typeInfo.optional.child);
             }
         },
-        .Pointer => {
-            switch (typeInfo.Pointer.size) {
-                .One => {
-                    const one = try alloc.create(typeInfo.Pointer.child);
+        .pointer => {
+            switch (typeInfo.pointer.size) {
+                .one => {
+                    const one = try alloc.create(typeInfo.pointer.child);
                     errdefer alloc.destroy(one);
-                    one.* = try generateField(alloc, random, typeInfo.Pointer.child);
+                    one.* = try generateField(alloc, random, typeInfo.pointer.child);
                     return one;
                 },
-                .Slice => {
+                .slice => {
                     const len = random.intRangeAtMost(usize, 0, 10);
-                    var array = try alloc.alloc(typeInfo.Pointer.child, len);
+                    var array = try alloc.alloc(typeInfo.pointer.child, len);
                     errdefer alloc.free(array);
                     for (0..array.len) |i| {
-                        array[i] = try generateField(alloc, random, typeInfo.Pointer.child);
+                        array[i] = try generateField(alloc, random, typeInfo.pointer.child);
                     }
                     return array[0..array.len];
                 },
                 else => {
-                    @compileError("Pointer type '" ++ @tagName(typeInfo.Pointer.size) ++ "' not supported ");
+                    @compileError("Pointer type '" ++ @tagName(typeInfo.pointer.size) ++ "' not supported ");
                 },
             }
         },
@@ -130,7 +130,7 @@ fn getBoundaries(comptime T: type, slice: []T) void {
         const max = comptime std.math.pow(T, 10, 3);
         var boundaries = [_]T{ 0, 1, max - 1, max };
         @memcpy(slice, &boundaries);
-    } else if (typeInfo == .Int and typeInfo.Int.signedness == .unsigned) {
+    } else if (typeInfo == .int and typeInfo.int.signedness == .unsigned) {
         const max = comptime std.math.maxInt(T);
         var boundaries = [_]T{ 0, 1, max - 1, max };
         @memcpy(slice, &boundaries);
