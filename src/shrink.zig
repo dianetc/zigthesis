@@ -2,10 +2,10 @@ const std = @import("std");
 
 pub fn shrink(comptime T: type, value: T, predicate: anytype, args: anytype) T {
     return switch (@typeInfo(T)) {
-        .Int => shrinkInt(T, value, predicate, args),
-        .Float => shrinkFloat(T, value, predicate, args),
-        .Array => shrinkArray(T, value, predicate, args),
-        .Struct => shrinkStruct(T, value, predicate, args),
+        .int => shrinkInt(T, value, predicate, args),
+        .float => shrinkFloat(T, value, predicate, args),
+        .array => shrinkArray(T, value, predicate, args),
+        .@"struct" => shrinkStruct(T, value, predicate, args),
         else => value,
     };
 }
@@ -54,7 +54,7 @@ fn shrinkFloat(comptime T: type, value: T, predicate: anytype, args: anytype) T 
 }
 
 fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T {
-    const info = @typeInfo(T).Array;
+    const info = @typeInfo(T).array;
     // Try shrinking individual elements
     var i: usize = 0;
     while (i < info.len) : (i += 1) {
@@ -75,7 +75,7 @@ fn shrinkArray(comptime T: type, value: T, predicate: anytype, args: anytype) T 
 }
 
 fn shrinkStruct(comptime T: type, value: T, predicate: anytype, args: anytype) T {
-    const info = @typeInfo(T).Struct;
+    const info = @typeInfo(T).@"struct";
     inline for (info.fields) |field| {
         var shrunk = value;
         @field(shrunk, field.name) = shrink(field.type, @field(value, field.name), struct {
