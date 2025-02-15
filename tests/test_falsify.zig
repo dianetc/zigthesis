@@ -81,7 +81,7 @@ test "Struct Test"{
     try zigthesis.falsify(simpleStruct, "field entries in struct");
 }
 
-const AnEnum = union(enum) {
+const AUnion = union(enum) {
     a : u8,
     b : u16,
     c : u32,
@@ -107,6 +107,16 @@ const AnEnum = union(enum) {
     w : []u64,
     x : []usize,
 };
+
+fn unionTest(instance: AnEnum) bool {
+    return instance == .a;
+}
+
+test "Union Test" {
+    try zigthesis.falsify(unionTest, "union test");
+}
+
+const AnEnum = enum { a, b, c };
 
 fn enumTest(instance: AnEnum) bool {
     return instance == .a;

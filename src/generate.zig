@@ -80,6 +80,10 @@ pub fn generateField(alloc: std.mem.Allocator, random: std.Random, comptime T: t
             }
             return instance;
         },
+        .@"enum" => {
+            const enumInfo = typeInfo.@"enum";
+            return @enumFromInt(random.intRangeAtMost(usize, 0, enumInfo.fields.len - 1));
+        },
         .void => {
             return {};
         },
