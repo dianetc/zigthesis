@@ -12,7 +12,6 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/utils.zig"),
     });
 
-
     const exe = b.addExecutable(.{
         .name = "zigthesis",
         .root_source_file = b.path("src/main.zig"),
@@ -28,7 +27,6 @@ pub fn build(b: *std.Build) void {
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
 
-
     const test_step = b.step("test", "Run all tests");
 
     const tests = b.addTest(.{
@@ -40,5 +38,12 @@ pub fn build(b: *std.Build) void {
     tests.root_module.addImport("zigthesis", zigthesis_module);
     tests.root_module.addImport("utils", utils_module);
 
+    const internal_tests = b.addTest(.{
+        .root_source_file = b.path("src/zigthesis.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     test_step.dependOn(&b.addRunArtifact(tests).step);
+    test_step.dependOn(&b.addRunArtifact(internal_tests).step);
 }

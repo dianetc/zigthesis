@@ -1,6 +1,11 @@
 const std = @import("std");
 const generate = @import("generate.zig");
 const shrink = @import("shrink.zig");
+
+comptime {
+    if (@import("builtin").is_test) {
+        _ = @import("shrink.zig");
+    }}
  
 pub const Error = error{
     Failed,
